@@ -1,0 +1,24 @@
+# Build outputs
+result
+result-*
+
+# Age private keys - NEVER COMMIT
+*.txt
+*.key
+*.pem
+*.priv
+*_rsa
+*_ed25519
+
+# Backup files
+*.bak
+*~
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Don't ignore encrypted secrets - they're safe!
+!secrets/*.yaml
+!secrets/**/*.yaml

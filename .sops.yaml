@@ -1,0 +1,47 @@
+# SOPS configuration for The Magi
+# This file contains only PUBLIC keys - safe to commit to Git
+
+keys:
+  # Personal key for editing secrets from any machine
+  - &personal age1c0tt9hneu4mqf35m4zkva8a88axcs94pkcavya0rrhlcm932f4nql56glc
+  
+  # Casper - MacBook Pro (laptop)
+  # - &casper age1...
+  
+  # Melchior - Home Server
+  # - &melchior age1...
+  
+  # Balthasar - Desktop
+  # - &balthasar age1...
+
+creation_rules:
+  # Casper secrets (MacBook Pro)
+  - path_regex: secrets/casper\.yaml$
+    key_groups:
+      - age:
+          - *personal
+          # - *casper
+  
+  # Melchior secrets (Home Server)
+  - path_regex: secrets/melchior\.yaml$
+    key_groups:
+      - age:
+          - *personal
+          # - *melchior
+  
+  # Balthasar secrets (Desktop)
+  - path_regex: secrets/balthasar\.yaml$
+    key_groups:
+      - age:
+          - *personal
+          # - *balthasar
+  
+  # Shared secrets (accessible from all machines)
+  - path_regex: secrets/shared\.yaml$
+    key_groups:
+      - age:
+          - *personal
+          # - *casper
+          # - *melchior
+          # - *balthasar
+

@@ -26,12 +26,13 @@
   };
 
   outputs = { self, nixpkgs, nix-darwin, home-manager, sops-nix, ... }@inputs: {
-    # Mac configuration
-    darwinConfigurations."MacBook-Pro-4" = nix-darwin.lib.darwinSystem {
+    # Mac configuration (Casper)
+    darwinConfigurations."casper" = nix-darwin.lib.darwinSystem {
       system = "x86_64-darwin";  # Intel Mac
       specialArgs = { inherit inputs; };
       modules = [
-        ./hosts/macbook/configuration.nix
+        ./hosts/casper/configuration.nix
+        ./modules/common.nix
         
         # Home Manager integration (we'll set this up next)
         home-manager.darwinModules.home-manager
@@ -45,8 +46,29 @@
         }
       ];
     };
+
+    # Future systems
+    # Melchior - Home Server
+    # nixosConfigurations.melchior = nixpkgs.lib.nixosSystem {
+    #   system = "x86_64-linux";
+    #   specialArgs = { inherit inputs; };
+    #   modules = [
+    #     ./hosts/melchior/configuration.nix
+    #     ./modules/common.nix
+    #     sops-nix.nixosModules.sops
+    #     home-manager.nixosModules.home-manager
+    #     {
+    #       home-manager = {
+    #         useGlobalPkgs = true;
+    #         useUserPackages = true;
+    #         users.ant = import ./home/alongo;
+    #       };
+    #     }
+    #   ];
+    # };
     
-    # Placeholder for future NixOS systems
-    # nixosConfigurations.homeserver = ...
+    # Balthasar - Desktop
+    # nixosConfigurations.balthasar = ...
+    
   };
 }

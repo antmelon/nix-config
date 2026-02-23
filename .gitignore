@@ -2,23 +2,47 @@
 result
 result-*
 
-# Age private keys - NEVER COMMIT
+# Age private keys - NEVER COMMIT THESE
 *.txt
 *.key
 *.pem
 *.priv
 *_rsa
 *_ed25519
+*.age.key
 
 # Backup files
 *.bak
 *~
 *.swp
+*.swo
 
-# OS files
+# OS-specific files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
-# Don't ignore encrypted secrets - they're safe!
+# Editor files
+.vscode/
+.idea/
+*.iml
+.projectile
+.dir-locals.el
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Nix-specific
+.envrc
+.direnv/
+
+# Don't ignore these encrypted files - they're safe to commit!
 !secrets/*.yaml
 !secrets/**/*.yaml
+!*.age  # If using agenix

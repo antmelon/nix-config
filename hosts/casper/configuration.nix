@@ -1,25 +1,11 @@
 { config, pkgs, ... }:
 
 {
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nixpkgs.config.allowUnfree = true;
-  
+  # Import common
   # NEW: Set primary user for system defaults
   system.primaryUser = "alongo";
 
   environment.systemPackages = with pkgs; [
-    vim
-    git
-    curl
-    wget
-    htop
-    jq
-    ripgrep
-    fd
-    tree
-    tmux
-    sops
-    age
   ];
 
   programs.fish.enable = true;

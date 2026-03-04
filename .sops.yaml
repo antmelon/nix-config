@@ -12,7 +12,7 @@ keys:
   # - &melchior age1...
   
   # Balthasar - Desktop
-  # - &balthasar age1...
+  - &balthasar age1g2zcadsn7ygy08n30kgh920w9w27aum960vgrhyencp3cuzpc4rsaqxxvp
 
 creation_rules:
   # Casper secrets (MacBook Pro)
@@ -34,7 +34,7 @@ creation_rules:
     key_groups:
       - age:
           - *personal
-          # - *balthasar
+          - *balthasar
   
   # Shared secrets (accessible from all machines)
   - path_regex: secrets/shared\.yaml$
@@ -43,5 +43,5 @@ creation_rules:
           - *personal
           # - *casper
           # - *melchior
-          # - *balthasar
+          - *balthasar
 

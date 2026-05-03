@@ -123,6 +123,7 @@
       ls = "eza";
       grep = "rg";
       find = "fd";
+      cls = "clear";
     };
   };
 

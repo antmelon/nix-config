@@ -11,6 +11,7 @@
       # Already in common.nix via flake, but you can add more here
     ];
 
+
     sessionVariables = {
       SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/personal.txt";
     };
@@ -23,7 +24,13 @@
     ../../home/alongo/default.nix
   ];
 
+  home.sessionPath = [
+    "/usr/local/go/bin"
+  ];
+
   # Override any settings specific to Linux/balthasar
+  programs.fish.enable = true;
+
   programs.fish = {
     # Most settings come from home/alongo/default.nix
     # Override shell aliases for balthasar-specific paths

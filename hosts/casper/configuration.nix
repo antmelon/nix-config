@@ -6,6 +6,7 @@
   system.primaryUser = "alongo";
 
   environment.systemPackages = with pkgs; [
+   pkgs.yt-dlp 
   ];
 
   programs.fish.enable = true;

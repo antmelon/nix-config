@@ -1,0 +1,37 @@
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+local opt = vim.opt
+
+opt.number = true
+opt.relativenumber = true
+
+opt.tabstop = 4
+opt.softtabstop = 4
+opt.shiftwidth = 4
+opt.expandtab = true
+opt.smartindent = true
+
+opt.wrap = false
+opt.swapfile = false
+opt.backup = false
+opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+opt.undofile = true
+
+opt.hlsearch = false
+opt.incsearch = true
+opt.ignorecase = true
+opt.smartcase = true
+
+opt.termguicolors = true
+opt.scrolloff = 8
+opt.signcolumn = "yes"
+opt.updatetime = 50
+opt.colorcolumn = "80"
+opt.cursorline = true
+
+opt.splitbelow = true
+opt.splitright = true
+
+opt.mouse = "a"
+opt.clipboard = "unnamedplus"

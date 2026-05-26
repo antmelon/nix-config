@@ -1,46 +1,59 @@
 # The Magi - Nix Configuration
 
-Multi-machine NixOS and nix-darwin configurations named after the Magi supercomputers from Neon Genesis Evangelion.
+Multi-machine NixOS, nix-darwin, and standalone home-manager configurations named after the Magi supercomputers from Neon Genesis Evangelion.
 
 > *"The MAGI system... It is a trinity. The three of them work together to reach the truth."*
 
 ## 🖥️ Systems
 
-| Name | Type | OS | Status | Purpose |
-|------|------|----|----|---------|
-| **casper** | 🍎 MacBook Pro | nix-darwin | ✅ Active | Personal laptop (Intel x86_64) |
-| **melchior** | 🖥️ Server | NixOS | 🚧 Planned | Home server, Foundry VTT, Glance dashboard |
-| **balthasar** | 🖥️ Desktop | Arch | 🚧 Planned | Desktop workstation |
+| Name | Type | OS | Manager | Status | Purpose |
+|------|------|----|---------|--------|---------|
+| **casper** | 🍎 MacBook Pro | macOS | nix-darwin + home-manager | ✅ Active | Personal laptop (Intel x86_64) |
+| **balthasar** | 🖥️ Desktop | Arch Linux | home-manager only | ✅ Active | Desktop workstation (x86_64) |
+| **melchior** | 🖥️ Server | NixOS | NixOS + home-manager | 🚧 Planned | Home server, Foundry VTT, Glance dashboard |
 
 ## 📁 Repository Structure
 
 ```
 .
-├── flake.nix              # Main flake configuration
-├── flake.lock             # Locked dependencies
-├── .sops.yaml             # Secrets management config
-├── .gitignore             # Git ignore rules
+├── flake.nix                       # Main flake (3 outputs: darwin/nixos/home)
+├── flake.lock                      # Locked dependencies
+├── .sops.yaml                      # Secrets management config
+├── .gitignore                      # Git ignore rules
 │
 ├── modules/
-│   └── common.nix         # Shared configuration across all systems
+│   └── common.nix                  # Shared NixOS/darwin settings (gc, flakes, unfree)
 │
 ├── hosts/
-│   ├── casper/           # MacBook Pro configuration
-│   │   └── configuration.nix
-│   ├── melchior/         # Home server (future)
-│   │   └── configuration.nix
-│   └── balthasar/        # Desktop (future)
-│       └── configuration.nix
+│   ├── casper/
+│   │   └── configuration.nix       # nix-darwin: macOS defaults, users
+│   ├── balthasar/
+│   │   └── configuration.nix       # home-manager standalone entrypoint
+│   └── melchior/
+│       ├── configuration.nix       # NixOS config (work-in-progress)
+│       └── hardware-configuration.nix  # Placeholder until install
 │
 ├── home/
-│   └── alongo/           # User dotfiles (home-manager)
-│       └── default.nix
+│   └── alongo/
+│       ├── base.nix                # Shared home-manager (packages, fish, git, starship)
+│       ├── darwin.nix              # macOS-specific home dirs
+│       ├── linux.nix               # Linux-specific home dirs + startx
+│       └── programs/
+│           ├── nvim.nix            # Live-edit symlink for nvim config
+│           ├── tmux.nix            # tmux + catppuccin + plugins
+│           └── fish-extras.nix     # Custom fish functions
 │
-└── secrets/              # Encrypted secrets (safe to commit!)
-    ├── casper.yaml       # Laptop secrets
-    ├── melchior.yaml     # Server secrets
-    ├── balthasar.yaml    # Desktop secrets
-    └── shared.yaml       # Shared across all systems
+├── nvim/                           # Neovim config (symlinked, edit live)
+│   ├── init.lua
+│   ├── lua/
+│   ├── lazy-lock.json
+│   └── KEYBINDINGS.md
+│
+├── scripts/
+│   └── check.sh                    # Eval/build all configs without activating
+│
+└── secrets/                        # Encrypted secrets (safe to commit!)
+    └── casper.yaml                 # (melchior/balthasar/shared.yaml TBD)
 ```
 
 ## 🚀 Quick Start
@@ -58,11 +71,24 @@ Multi-machine NixOS and nix-darwin configurations named after the Magi supercomp
 git clone https://github.com/antmelon/nix-config.git ~/.config/nix-config
 cd ~/.config/nix-config
 
-# For macOS (casper)
+# casper (macOS, nix-darwin)
 sudo darwin-rebuild switch --flake .#casper
 
-# For NixOS (melchior/balthasar)
-sudo nixos-rebuild switch --flake .#<melchior/balthasar>
+# balthasar (Arch, home-manager only)
+home-manager switch --flake .#balthasar
+
+# melchior (NixOS, once installed)
+sudo nixos-rebuild switch --flake .#melchior
+```
+
+### Verifying Configs
+
+```bash
+# Eval-only check of all systems (fast)
+./scripts/check.sh
+
+# Full build (slower, catches more issues)
+./scripts/check.sh --build
 ```
 
 ## 📝 Common Commands
@@ -70,14 +96,10 @@ sudo nixos-rebuild switch --flake .#<melchior/balthasar>
 ### System Management
 
 ```bash
-# Update casper (from casper)
-updatecasper
-
-# Update melchior
-updatemelchior
-
-# Update balthasar
-updatebalthasar
+# Update each machine (aliases defined in base.nix)
+updatecasper       # sudo darwin-rebuild switch --flake ~/.config/nix-config#casper
+updatebalthasar    # home-manager switch --flake ~/.config/nix-config#balthasar
+updatemelchior     # nixos-rebuild switch --flake ... --target-host melchior --use-remote-sudo
 
 # Update flake inputs
 cd ~/.config/nix-config
@@ -92,7 +114,7 @@ editcasper        # Edit casper config
 editmelchior      # Edit melchior config
 editbalthasar     # Edit balthasar config
 editcommon        # Edit common module
-edithome          # Edit home-manager config
+edithome          # Edit home/alongo/base.nix
 editflake         # Edit flake.nix
 
 # Quick navigation
@@ -104,9 +126,9 @@ cdnix             # Jump to config directory
 ```bash
 # Edit secrets
 secretcasper      # Edit casper secrets
-secretmelchior    # Edit melchior secrets
-secretbalthasar   # Edit balthasar secrets
-secretshared      # Edit shared secrets
+secretmelchior    # Edit melchior secrets (TBD)
+secretbalthasar   # Edit balthasar secrets (TBD)
+secretshared      # Edit shared secrets (TBD)
 
 # View decrypted secrets
 sops -d secrets/casper.yaml
@@ -119,9 +141,15 @@ This repository uses [sops-nix](https://github.com/Mic92/sops-nix) for encrypted
 ### How It Works
 
 - Secrets are encrypted with age keys
-- Each machine has its own age key pair
+- Each machine has its own age key pair (in addition to a personal key for any-machine edits)
 - Encrypted secrets are **safe to commit** to Git
 - Only machines with the correct private key can decrypt
+
+### Current Key Set
+
+- `personal` — root key, can decrypt everything (used for editing from any machine)
+- `balthasar` — desktop key, can decrypt `balthasar.yaml` and `shared.yaml`
+- `casper`, `melchior` — placeholders in `.sops.yaml`, not yet generated
 
 ### Adding a New Machine
 
@@ -142,23 +170,22 @@ This repository uses [sops-nix](https://github.com/Mic92/sops-nix) for encrypted
 ### Editing Secrets
 
 ```bash
-# Edit a secrets file (auto-decrypts for editing)
-sops secrets/casper.yaml
-
-# View decrypted (read-only)
-sops -d secrets/casper.yaml
+sops secrets/casper.yaml       # auto-decrypts for editing
+sops -d secrets/casper.yaml    # view decrypted (read-only)
 ```
 
 ## ✨ Features
 
 ### Common to All Systems
 
-- **Declarative Configuration** - Everything defined in code
-- **Home Manager** - Consistent dotfiles across machines
-- **Secrets Management** - Encrypted secrets with sops-nix
-- **Fish Shell** - With starship prompt, eza, bat, fzf
-- **Development Tools** - gcc, cmake, rust, python3
-- **Git** - Pre-configured with sensible defaults
+- **Declarative Configuration** — Everything defined in code
+- **Home Manager** — Consistent dotfiles across machines via `home/alongo/base.nix`
+- **Secrets Management** — Encrypted secrets with sops-nix
+- **Fish Shell** — With starship prompt, eza, bat, fzf, ripgrep, fd
+- **Neovim (nightly)** — Pulled via `neovim-nightly-overlay`, config symlinked from `nvim/` for live editing without rebuild
+- **tmux** — Catppuccin theme, resurrect/continuum, tmux-fzf, fzf-url, tmux-thumbs
+- **Development Tools** — gcc, cmake, ninja, rustc, cargo, python3
+- **Git** — Pre-configured with sensible defaults
 
 ### casper (MacBook Pro)
 
@@ -166,6 +193,13 @@ sops -d secrets/casper.yaml
 - Touch ID for sudo
 - Caps Lock → Control remapping
 - Dark mode everywhere
+- `yt-dlp` installed system-wide
+
+### balthasar (Arch Desktop)
+
+- Home-manager only (Arch handles the system layer)
+- Auto-`startx` on tty1 login via fish login-shell init
+- Shares `base.nix` + `linux.nix` with melchior's home config
 
 ### melchior (Home Server) - Planned
 
@@ -173,11 +207,6 @@ sops -d secrets/casper.yaml
 - Glance dashboard
 - Tailscale for remote access
 - Automatic backups
-
-### balthasar (Desktop) - Planned
-
-- Desktop environment
-- Hardware-specific configurations
 
 ## 🛠️ Development Workflow
 
@@ -187,8 +216,8 @@ sops -d secrets/casper.yaml
 # 1. Edit configuration
 vim ~/.config/nix-config/hosts/casper/configuration.nix
 
-# 2. Test build (doesn't activate)
-darwin-rebuild build --flake ~/.config/nix-config#casper
+# 2. Verify it evaluates
+./scripts/check.sh
 
 # 3. Apply changes
 updatecasper
@@ -203,13 +232,13 @@ git push
 ### Adding Packages
 
 **System-wide (all machines):**
-Edit `modules/common.nix`
+Edit `home/alongo/base.nix` (the `home.packages` list)
 
-**Machine-specific:**
+**Machine-specific (system layer):**
 Edit `hosts/MACHINE/configuration.nix`
 
-**User-specific:**
-Edit `home/alongo/default.nix`
+**Per-platform home-manager:**
+Edit `home/alongo/darwin.nix` or `home/alongo/linux.nix`
 
 ### Rollback
 
@@ -222,7 +251,7 @@ sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 # Rollback to previous generation
 sudo darwin-rebuild switch --rollback
 
-# Or select a specific generation from boot menu
+# Or select a specific generation from boot menu (NixOS)
 ```
 
 ## 📚 Useful Resources
@@ -245,7 +274,7 @@ sudo darwin-rebuild switch --rollback
 ### Never Commit
 
 ❌ `*.txt` (age private keys)
-❌ `*.key` (private keys)
+❌ `*.key` / `*.pem` / `*.priv` (private keys)
 ❌ Unencrypted secrets
 ❌ `result` symlinks
 
@@ -255,8 +284,8 @@ The `.gitignore` is configured to protect you from accidentally committing priva
 
 ### melchior (Home Server)
 
-- [ ] Install NixOS
-- [ ] Add to this repository
+- [ ] Install NixOS, fill in `hardware-configuration.nix`
+- [ ] Generate machine age key, add to `.sops.yaml`
 - [ ] Set up Foundry VTT
 - [ ] Configure Glance dashboard
 - [ ] Set up Tailscale
@@ -264,9 +293,9 @@ The `.gitignore` is configured to protect you from accidentally committing priva
 
 ### balthasar (Desktop)
 
-- [ ] Install NixOS
-- [ ] Add to this repository
-- [ ] Desktop environment configuration
+- [x] Bring under home-manager
+- [x] Generate age key, wire up sops
+- [ ] Migrate from standalone home-manager to full NixOS (eventually)
 - [ ] Gaming optimizations
 
 ## 🤝 Contributing
@@ -291,4 +320,3 @@ Configuration inspired by:
 ---
 
 *"Mankind's greatest invention is the computer. It is the ultimate tool to carry out the will of man."*
-```

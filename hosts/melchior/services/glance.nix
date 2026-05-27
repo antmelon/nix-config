@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   services.glance = {
@@ -75,5 +75,28 @@
         ];
       }];
     };
+  };
+
+  # Expose glance on the tailnet as https://glances/ via a Tailscale Service.
+  # No nixpkgs module covers `tailscale serve` yet, so we re-apply the CLI
+  # config on every boot. Calls are idempotent.
+  systemd.services.tailscale-serve-glance = {
+    description = "Advertise glance as Tailscale Service svc:glances";
+    after = [ "tailscaled.service" "network-online.target" ];
+    wants = [ "network-online.target" ];
+    requires = [ "tailscaled.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      for _ in $(seq 1 30); do
+        ${pkgs.tailscale}/bin/tailscale status --self=true --peers=false >/dev/null 2>&1 && break
+        sleep 1
+      done
+      ${pkgs.tailscale}/bin/tailscale set --advertise-services=svc:glances
+      ${pkgs.tailscale}/bin/tailscale serve --service=svc:glances --bg --https=443 http://127.0.0.1:8080
+    '';
   };
 }

@@ -61,7 +61,6 @@
       "$HOME/.cabal/bin"
       "$HOME/.ghcup/bin"
       "$HOME/.codeium/windsurf/bin"
-      "/run/current-system/sw/bin"
       "$HOME/.nix-profile/bin"
       "/nix/var/nix/profiles/default/bin"
     ];

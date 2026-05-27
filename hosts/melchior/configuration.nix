@@ -9,12 +9,8 @@
 
   networking.hostName = "melchior";
 
-  # TODO: configure boot loader after partitioning
-  # boot.loader.grub.enable = true;
-  # boot.loader.grub.device = "/dev/sda";
-
-  # TODO: configure filesystems after partitioning
-  # fileSystems."/" = { device = "/dev/sda1"; fsType = "ext4"; };
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
   networking.networkmanager.enable = true;
 
@@ -26,7 +22,15 @@
     isNormalUser = true;
     extraGroups  = [ "wheel" "networkmanager" ];
     shell        = pkgs.fish;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINPcpj/4y4RM7WRHD/8RXgJASHgYTZ3NyAvg0aNdkugg alongo0925@gmail.com"
+    ];
   };
+
+  security.sudo.extraRules = [{
+    users = [ "alongo" ];
+    commands = [{ command = "ALL"; options = [ "NOPASSWD" ]; }];
+  }];
 
   programs.fish.enable = true;
 
@@ -35,8 +39,13 @@
     settings.PasswordAuthentication = false;
   };
 
-  # TODO: open ports as needed
-  networking.firewall.enable = true;
+  services.tailscale.enable = true;
+
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 22 ];
+    trustedInterfaces = [ "tailscale0" ];
+  };
 
   home-manager = {
     useGlobalPkgs   = true;
@@ -45,7 +54,7 @@
     users.alongo = { imports = [ ../../home/alongo/base.nix ../../home/alongo/linux.nix ]; };
   };
 
-  # TODO: add melchior services here (Foundry VTT, Glance, Tailscale, etc.)
+  # TODO: add melchior services here (Foundry VTT, Glance, etc.)
 
   system.stateVersion = "24.11";
 }

@@ -47,6 +47,12 @@
 
   services.tailscale.enable = true;
 
+  # Stay reachable on the tailnet when plugged in (battery sleep behavior
+  # is left at its default). Display sleep is untouched.
+  system.activationScripts.pmsetAC.text = ''
+    /usr/bin/pmset -c sleep 0
+  '';
+
   # nix-darwin's tailscale module only starts tailscaled; it has no
   # equivalent of NixOS's `extraSetFlags`, so apply `--ssh` via a launchd
   # daemon that runs once at load and exits.

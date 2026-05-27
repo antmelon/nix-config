@@ -1,5 +1,10 @@
 { pkgs, ... }:
 
+# Router DNS state before pointing the LAN at melchior (2026-05-27):
+#   Primary:   208.59.247.45
+#   Secondary: 208.59.247.46
+# These are the ISP-provided resolvers. Restore them in the router admin
+# page if AdGuard ever needs to be bypassed without melchior up.
 {
   services.adguardhome = {
     enable = true;

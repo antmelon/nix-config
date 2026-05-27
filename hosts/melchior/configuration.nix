@@ -42,7 +42,10 @@
     settings.PasswordAuthentication = false;
   };
 
-  services.tailscale.enable = true;
+  services.tailscale = {
+    enable = true;
+    extraSetFlags = [ "--ssh" ];
+  };
 
   networking.firewall = {
     enable = true;

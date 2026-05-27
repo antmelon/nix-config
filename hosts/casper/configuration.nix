@@ -45,6 +45,28 @@
     };
   };
 
+  services.tailscale.enable = true;
+
+  # nix-darwin's tailscale module only starts tailscaled; it has no
+  # equivalent of NixOS's `extraSetFlags`, so apply `--ssh` via a launchd
+  # daemon that runs once at load and exits.
+  launchd.daemons.tailscale-set-ssh = {
+    serviceConfig = {
+      Label = "com.user.tailscale-set-ssh";
+      RunAtLoad = true;
+      KeepAlive = false;
+      ProgramArguments = [
+        "${pkgs.writeShellScript "tailscale-set-ssh" ''
+          for _ in $(seq 1 30); do
+            ${pkgs.tailscale}/bin/tailscale status --self=true --peers=false >/dev/null 2>&1 && break
+            sleep 1
+          done
+          ${pkgs.tailscale}/bin/tailscale set --ssh
+        ''}"
+      ];
+    };
+  };
+
   system.stateVersion = 6;
   system.configurationRevision = null;
 }

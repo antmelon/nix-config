@@ -9,7 +9,7 @@ keys:
   # - &casper age1...
   
   # Melchior - Home Server
-  # - &melchior age1...
+  - &melchior age1kd4x5v53fshwaadhz48lfx36lj9xpddhr5wsg3zuglge0vm50aps9ganwp
   
   # Balthasar - Desktop
   - &balthasar age1g2zcadsn7ygy08n30kgh920w9w27aum960vgrhyencp3cuzpc4rsaqxxvp
@@ -27,7 +27,7 @@ creation_rules:
     key_groups:
       - age:
           - *personal
-          # - *melchior
+          - *melchior
   
   # Balthasar secrets (Desktop)
   - path_regex: secrets/balthasar\.yaml$
@@ -42,6 +42,6 @@ creation_rules:
       - age:
           - *personal
           # - *casper
-          # - *melchior
+          - *melchior
           - *balthasar
 

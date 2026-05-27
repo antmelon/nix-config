@@ -4,6 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ./services/glance.nix
+    ./services/backups.nix
     ../../modules/common.nix
     inputs.home-manager.nixosModules.home-manager
   ];

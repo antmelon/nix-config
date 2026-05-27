@@ -28,6 +28,7 @@ creation_rules:
       - age:
           - *personal
           - *melchior
+          - *balthasar
   
   # Balthasar secrets (Desktop)
   - path_regex: secrets/balthasar\.yaml$

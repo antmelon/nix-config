@@ -11,7 +11,7 @@
       theme = {
         background-color = "240 8 9";
         primary-color = "43 50 70";
-        contrast-multiplier = "1.1";
+        contrast-multiplier = 1.1;
       };
       pages = [{
         name = "Home";

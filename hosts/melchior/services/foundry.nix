@@ -36,7 +36,7 @@ in
         ${pkgs.tailscale}/bin/tailscale status --self=true --peers=false >/dev/null 2>&1 && break
         sleep 1
       done
-      ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=443 --set-path=/foundry http://127.0.0.1:30000
+      ${pkgs.tailscale}/bin/tailscale funnel --bg --yes --https=443 --set-path=/foundry http://127.0.0.1:30000/foundry
     '';
   };
 }

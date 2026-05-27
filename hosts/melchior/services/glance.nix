@@ -69,11 +69,7 @@
                   }
                   {
                     title = "Foundry (tailnet)";
-                    url = "http://127.0.0.1:30000/foundry/auth";
-                  }
-                  {
-                    title = "Glance via Tailscale";
-                    url = "https://glances.taile2fc00.ts.net/";
+                    url = "http://melchior:30000/foundry/auth";
                   }
                 ];
               }

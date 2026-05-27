@@ -22,7 +22,7 @@
               { type = "calendar"; }
               {
                 type = "weather";
-                location = "New York, NY, USA";
+                location = "New York City, United States";
                 units = "imperial";
               }
             ];

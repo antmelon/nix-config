@@ -23,9 +23,14 @@
       url = "github:nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    foundryvtt = {
+      url = "github:reckenrode/nix-foundryvtt";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, sops-nix, neovim-nightly-overlay, ... }@inputs:
+  outputs = { self, nixpkgs, nix-darwin, home-manager, sops-nix, neovim-nightly-overlay, foundryvtt, ... }@inputs:
   let
     overlays = [ neovim-nightly-overlay.overlays.default ];
   in {
@@ -58,6 +63,7 @@
         { nixpkgs.overlays = overlays; }
         ./hosts/melchior/configuration.nix
         sops-nix.nixosModules.sops
+        foundryvtt.nixosModules.foundryvtt
       ];
     };
 

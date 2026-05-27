@@ -5,6 +5,7 @@
     ./hardware-configuration.nix
     ./services/glance.nix
     ./services/backups.nix
+    ./services/foundry.nix
     ../../modules/common.nix
     inputs.home-manager.nixosModules.home-manager
   ];

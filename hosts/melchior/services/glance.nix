@@ -65,6 +65,7 @@
                   links = [
                     { title = "GitHub"; url = "https://github.com"; }
                     { title = "NixOS Search"; url = "https://search.nixos.org"; }
+                    { title = "Foundry VTT"; url = "http://melchior:30000"; }
                     { title = "Backblaze (backups)"; url = "https://secure.backblaze.com/b2_buckets.htm"; }
                   ];
                 }];

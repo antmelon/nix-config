@@ -73,11 +73,13 @@
                   }
                   {
                     title = "Vaultwarden";
-                    url = "http://melchior:8222/alive";
+                    url = "https://vault.taile2fc00.ts.net/";
+                    check-url = "http://127.0.0.1:8222/alive";
                   }
                   {
                     title = "AdGuard Home";
-                    url = "http://melchior:3000/control/status";
+                    url = "https://adguard.taile2fc00.ts.net/";
+                    check-url = "http://127.0.0.1:3000/";
                   }
                 ];
               }

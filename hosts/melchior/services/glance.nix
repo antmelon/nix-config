@@ -59,6 +59,25 @@
                 }];
               }
               {
+                type = "monitor";
+                title = "Service Health";
+                cache = "1m";
+                sites = [
+                  {
+                    title = "Foundry (public)";
+                    url = "https://melchior.taile2fc00.ts.net/foundry/auth";
+                  }
+                  {
+                    title = "Foundry (tailnet)";
+                    url = "http://127.0.0.1:30000/foundry/auth";
+                  }
+                  {
+                    title = "Glance via Tailscale";
+                    url = "https://glances.taile2fc00.ts.net/";
+                  }
+                ];
+              }
+              {
                 type = "bookmarks";
                 groups = [{
                   title = "Quick Links";

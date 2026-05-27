@@ -3,6 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./services/glance.nix
     ../../modules/common.nix
     inputs.home-manager.nixosModules.home-manager
   ];
@@ -54,7 +55,7 @@
     users.alongo = { imports = [ ../../home/alongo/base.nix ../../home/alongo/linux.nix ]; };
   };
 
-  # TODO: add melchior services here (Foundry VTT, Glance, etc.)
+  # Per-service modules live in ./services/ — add new ones to imports above.
 
   system.stateVersion = "24.11";
 }

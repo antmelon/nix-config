@@ -6,6 +6,8 @@
     ./services/glance.nix
     ./services/backups.nix
     ./services/foundry.nix
+    ./services/vaultwarden.nix
+    ./services/adguard.nix
     ../../modules/common.nix
     inputs.home-manager.nixosModules.home-manager
   ];

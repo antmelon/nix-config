@@ -71,6 +71,14 @@
                     title = "Foundry (tailnet)";
                     url = "http://melchior:30000/foundry/auth";
                   }
+                  {
+                    title = "Vaultwarden";
+                    url = "http://melchior:8222/alive";
+                  }
+                  {
+                    title = "AdGuard Home";
+                    url = "http://melchior:3000/control/status";
+                  }
                 ];
               }
               {
@@ -81,6 +89,8 @@
                     { title = "GitHub"; url = "https://github.com"; }
                     { title = "NixOS Search"; url = "https://search.nixos.org"; }
                     { title = "Foundry VTT"; url = "http://melchior:30000/foundry/"; }
+                    { title = "Vaultwarden"; url = "https://vault.taile2fc00.ts.net/"; }
+                    { title = "AdGuard Home"; url = "https://adguard.taile2fc00.ts.net/"; }
                     { title = "Backblaze (backups)"; url = "https://secure.backblaze.com/b2_buckets.htm"; }
                   ];
                 }];

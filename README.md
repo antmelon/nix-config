@@ -10,7 +10,7 @@ Multi-machine NixOS, nix-darwin, and standalone home-manager configurations name
 |------|------|----|---------|--------|---------|
 | **casper** | 🍎 MacBook Pro | macOS | nix-darwin + home-manager | ✅ Active | Personal laptop (Intel x86_64) |
 | **balthasar** | 🖥️ Desktop | Arch Linux | home-manager only | ✅ Active | Desktop workstation (x86_64) |
-| **melchior** | 🖥️ Server | NixOS | NixOS + home-manager | 🚧 Planned | Home server, Foundry VTT, Glance dashboard |
+| **melchior** | 🖥️ Server | NixOS | NixOS + home-manager | ✅ Active | Home server: Foundry VTT, Glance, restic backups, tailscale |
 
 ## 📁 Repository Structure
 
@@ -30,8 +30,12 @@ Multi-machine NixOS, nix-darwin, and standalone home-manager configurations name
 │   ├── balthasar/
 │   │   └── configuration.nix       # home-manager standalone entrypoint
 │   └── melchior/
-│       ├── configuration.nix       # NixOS config (work-in-progress)
-│       └── hardware-configuration.nix  # Placeholder until install
+│       ├── configuration.nix       # NixOS: ssh, tailscale (+--ssh), users
+│       ├── hardware-configuration.nix
+│       └── services/
+│           ├── glance.nix          # Glance dashboard + tailscale serve (svc:glances)
+│           ├── foundry.nix         # Foundry VTT (via nix-foundryvtt input)
+│           └── backups.nix         # Nightly restic → Backblaze B2 (sops-managed)
 │
 ├── home/
 │   └── alongo/
@@ -53,7 +57,8 @@ Multi-machine NixOS, nix-darwin, and standalone home-manager configurations name
 │   └── check.sh                    # Eval/build all configs without activating
 │
 └── secrets/                        # Encrypted secrets (safe to commit!)
-    └── casper.yaml                 # (melchior/balthasar/shared.yaml TBD)
+    ├── casper.yaml
+    └── melchior.yaml               # restic B2 creds (balthasar/shared.yaml TBD)
 ```
 
 ## 🚀 Quick Start
@@ -148,8 +153,9 @@ This repository uses [sops-nix](https://github.com/Mic92/sops-nix) for encrypted
 ### Current Key Set
 
 - `personal` — root key, can decrypt everything (used for editing from any machine)
-- `balthasar` — desktop key, can decrypt `balthasar.yaml` and `shared.yaml`
-- `casper`, `melchior` — placeholders in `.sops.yaml`, not yet generated
+- `balthasar` — desktop key, can decrypt `balthasar.yaml`, `melchior.yaml`, and `shared.yaml`
+- `melchior` — server key, can decrypt `melchior.yaml`
+- `casper` — placeholder in `.sops.yaml`, not yet generated
 
 ### Adding a New Machine
 
@@ -194,6 +200,8 @@ sops -d secrets/casper.yaml    # view decrypted (read-only)
 - Caps Lock → Control remapping
 - Dark mode everywhere
 - `yt-dlp` installed system-wide
+- Tailscale with SSH (via launchd daemon, since nix-darwin's module has no `extraSetFlags`)
+- `pmset -c sleep 0` so the laptop stays reachable on tailnet when plugged in
 
 ### balthasar (Arch Desktop)
 
@@ -201,12 +209,13 @@ sops -d secrets/casper.yaml    # view decrypted (read-only)
 - Auto-`startx` on tty1 login via fish login-shell init
 - Shares `base.nix` + `linux.nix` with melchior's home config
 
-### melchior (Home Server) - Planned
+### melchior (Home Server)
 
-- Foundry Virtual Tabletop
-- Glance dashboard
-- Tailscale for remote access
-- Automatic backups
+- Foundry Virtual Tabletop (via `nix-foundryvtt`, tailnet-only)
+- Glance dashboard, exposed at `https://glances/` via Tailscale Service (svc:glances)
+- Tailscale with SSH enabled (`extraSetFlags = [ "--ssh" ]`)
+- Nightly restic backups to Backblaze B2 (sops-managed credentials)
+- Per-service modules under `hosts/melchior/services/`
 
 ## 🛠️ Development Workflow
 
@@ -284,12 +293,12 @@ The `.gitignore` is configured to protect you from accidentally committing priva
 
 ### melchior (Home Server)
 
-- [ ] Install NixOS, fill in `hardware-configuration.nix`
-- [ ] Generate machine age key, add to `.sops.yaml`
-- [ ] Set up Foundry VTT
-- [ ] Configure Glance dashboard
-- [ ] Set up Tailscale
-- [ ] Configure automatic backups
+- [x] Install NixOS, fill in `hardware-configuration.nix`
+- [x] Generate machine age key, add to `.sops.yaml`
+- [x] Set up Foundry VTT
+- [x] Configure Glance dashboard
+- [x] Set up Tailscale (declarative, with `--ssh`)
+- [x] Configure automatic backups (restic → B2)
 
 ### balthasar (Desktop)
 
@@ -297,6 +306,7 @@ The `.gitignore` is configured to protect you from accidentally committing priva
 - [x] Generate age key, wire up sops
 - [ ] Migrate from standalone home-manager to full NixOS (eventually)
 - [ ] Gaming optimizations
+- Note: tailscale stays on `pacman` until full NixOS migration — home-manager standalone can't manage system daemons cleanly
 
 ## 🤝 Contributing
 

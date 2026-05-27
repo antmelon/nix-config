@@ -95,8 +95,8 @@
         ${pkgs.tailscale}/bin/tailscale status --self=true --peers=false >/dev/null 2>&1 && break
         sleep 1
       done
-      ${pkgs.tailscale}/bin/tailscale set --advertise-services=svc:glances
       ${pkgs.tailscale}/bin/tailscale serve --service=svc:glances --bg --https=443 http://127.0.0.1:8080
+      ${pkgs.tailscale}/bin/tailscale serve --service=svc:glances advertise svc:glances
     '';
   };
 }

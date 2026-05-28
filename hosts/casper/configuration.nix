@@ -45,7 +45,17 @@
     };
   };
 
-  services.tailscale.enable = true;
+  # Tailscale is installed as the GUI app via Homebrew. The bundled
+  # system extension provides a real utun interface, which is required
+  # for tailscaled to push DNS settings to macOS (MagicDNS, override-
+  # local-DNS, etc.). nix-darwin's services.tailscale runs tailscaled
+  # in userspace-networking mode, which deliberately does not touch
+  # system DNS.
+  homebrew = {
+    enable = true;
+    onActivation.autoUpdate = false;
+    casks = [ "tailscale-app" ];
+  };
 
   # Stay reachable on the tailnet when plugged in (battery sleep behavior
   # is left at its default). Display sleep is untouched.
@@ -53,25 +63,13 @@
     /usr/bin/pmset -c sleep 0
   '';
 
-  # nix-darwin's tailscale module only starts tailscaled; it has no
-  # equivalent of NixOS's `extraSetFlags`, so apply `--ssh` via a launchd
-  # daemon that runs once at load and exits.
-  launchd.daemons.tailscale-set-ssh = {
-    serviceConfig = {
-      Label = "com.user.tailscale-set-ssh";
-      RunAtLoad = true;
-      KeepAlive = false;
-      ProgramArguments = [
-        "${pkgs.writeShellScript "tailscale-set-ssh" ''
-          for _ in $(seq 1 30); do
-            ${pkgs.tailscale}/bin/tailscale status --self=true --peers=false >/dev/null 2>&1 && break
-            sleep 1
-          done
-          ${pkgs.tailscale}/bin/tailscale set --ssh
-        ''}"
-      ];
-    };
-  };
+  # Enable macOS Remote Login (OpenSSH). The Tailscale GUI app's
+  # embedded daemon is sandboxed and cannot run an SSH server, so we
+  # use system sshd and reach it over the tailnet via MagicDNS
+  # (ssh alongo@casper).
+  system.activationScripts.remoteLogin.text = ''
+    /usr/sbin/systemsetup -setremotelogin on > /dev/null
+  '';
 
   system.stateVersion = 6;
   system.configurationRevision = null;

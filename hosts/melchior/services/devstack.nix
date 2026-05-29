@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   # Podman as a rootful daemon-less docker substitute; CLI alias provides `docker`.
@@ -43,5 +43,27 @@
         "127.0.0.1:8025:8025"
       ];
     };
+  };
+
+  # Expose Mailpit's web UI as svc:mail on the tailnet (https://mail/).
+  # SMTP (port 1025) stays localhost-only — apps under dev send via SSH tunnel.
+  systemd.services.tailscale-serve-mail = {
+    description = "Advertise Mailpit as Tailscale Service svc:mail";
+    after = [ "tailscaled.service" "network-online.target" "podman-dev-mailpit.service" ];
+    wants = [ "network-online.target" ];
+    requires = [ "tailscaled.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      for _ in $(seq 1 30); do
+        ${pkgs.tailscale}/bin/tailscale status --self=true --peers=false >/dev/null 2>&1 && break
+        sleep 1
+      done
+      ${pkgs.tailscale}/bin/tailscale serve --service=svc:mail --bg --https=443 http://127.0.0.1:8025
+      ${pkgs.tailscale}/bin/tailscale serve --service=svc:mail advertise svc:mail
+    '';
   };
 }

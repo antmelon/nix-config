@@ -81,6 +81,11 @@
                     url = "https://adguard.taile2fc00.ts.net/";
                     check-url = "http://127.0.0.1:3000/";
                   }
+                  {
+                    title = "Mailpit";
+                    url = "https://mail.taile2fc00.ts.net/";
+                    check-url = "http://127.0.0.1:8025/";
+                  }
                 ];
               }
               {
@@ -93,6 +98,7 @@
                     { title = "Foundry VTT"; url = "http://melchior:30000/foundry/"; }
                     { title = "Vaultwarden"; url = "https://vault.taile2fc00.ts.net/"; }
                     { title = "AdGuard Home"; url = "https://adguard.taile2fc00.ts.net/"; }
+                    { title = "Mailpit"; url = "https://mail.taile2fc00.ts.net/"; }
                     { title = "Backblaze (backups)"; url = "https://secure.backblaze.com/b2_buckets.htm"; }
                   ];
                 }];

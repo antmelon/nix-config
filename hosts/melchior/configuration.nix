@@ -8,6 +8,7 @@
     ./services/foundry.nix
     ./services/vaultwarden.nix
     ./services/adguard.nix
+    ./services/devstack.nix
     ../../modules/common.nix
     inputs.home-manager.nixosModules.home-manager
   ];

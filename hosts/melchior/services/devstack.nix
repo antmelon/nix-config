@@ -6,7 +6,9 @@
     podman = {
       enable = true;
       dockerCompat = true;
-      defaultNetwork.settings.dns_enabled = true;
+      # aardvark-dns would bind 10.88.0.1:53 and collide with AdGuard on this host.
+      # Inter-container DNS isn't needed — services are reached via 127.0.0.1 ports.
+      defaultNetwork.settings.dns_enabled = false;
     };
     oci-containers.backend = "podman";
   };

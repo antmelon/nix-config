@@ -29,6 +29,9 @@
       eza
       fzf
 
+      # Task manager (todo.txt TUI); tasks live in the Syncthing folder
+      tuxedo
+
       # Secrets
       sops
       age
@@ -138,6 +141,9 @@
       secretmelchior  = "sops ~/.config/nix-config/secrets/melchior.yaml";
       secretbalthasar = "sops ~/.config/nix-config/secrets/balthasar.yaml";
       secretshared    = "sops ~/.config/nix-config/secrets/shared.yaml";
+
+      # Tasks (todo.txt synced across the Magi via Syncthing)
+      t = "tuxedo ~/sync/tasks/todo.txt";
 
       # Navigation
       cdnix = "cd ~/.config/nix-config";

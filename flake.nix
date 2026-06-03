@@ -4,6 +4,12 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
+    # Temporary: tuxedo landed on master 2026-06-02 but the unstable channel
+    # hasn't advanced past it yet. Pin master here and overlay only `tuxedo`
+    # from it (see overlays below). Drop this input + overlay once
+    # nixpkgs-unstable includes tuxedo (then `tuxedo` resolves from nixpkgs).
+    nixpkgs-tuxedo.url = "github:NixOS/nixpkgs/master";
+
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -32,7 +38,13 @@
 
   outputs = { self, nixpkgs, nix-darwin, home-manager, sops-nix, neovim-nightly-overlay, foundryvtt, ... }@inputs:
   let
-    overlays = [ neovim-nightly-overlay.overlays.default ];
+    overlays = [
+      neovim-nightly-overlay.overlays.default
+      # Pull just `tuxedo` from pinned master until the channel catches up.
+      (final: prev: {
+        tuxedo = inputs.nixpkgs-tuxedo.legacyPackages.${prev.stdenv.hostPlatform.system}.tuxedo;
+      })
+    ];
   in {
 
     # casper — MacBook Pro (Intel, nix-darwin)
@@ -49,7 +61,7 @@
             useGlobalPkgs   = true;
             useUserPackages = true;
             extraSpecialArgs = { inherit inputs; };
-            users.alongo = { imports = [ ./home/alongo/base.nix ./home/alongo/darwin.nix ]; };
+            users.alongo = { imports = [ ./home/alongo/base.nix ./home/alongo/darwin.nix ./home/alongo/programs/syncthing.nix ]; };
           };
         }
       ];

@@ -9,6 +9,7 @@
     ./services/vaultwarden.nix
     ./services/adguard.nix
     ./services/devstack.nix
+    ./services/syncthing.nix
     ../../modules/common.nix
     inputs.home-manager.nixosModules.home-manager
   ];

@@ -40,6 +40,13 @@
   let
     overlays = [
       neovim-nightly-overlay.overlays.default
+      # The nightly neovim's functional test suite currently fails to build
+      # under nixpkgs 26.11 (missing make target functionaltest__treesitter).
+      # We only install the binary and manage nvim config outside Nix, so skip
+      # the test phase. Drop this once the nightly checkPhase builds again.
+      (final: prev: {
+        neovim-unwrapped = prev.neovim-unwrapped.overrideAttrs (_: { doCheck = false; });
+      })
       # Pull just `tuxedo` from pinned master until the channel catches up.
       (final: prev: {
         tuxedo = inputs.nixpkgs-tuxedo.legacyPackages.${prev.stdenv.hostPlatform.system}.tuxedo;

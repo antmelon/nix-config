@@ -43,8 +43,11 @@
       # The nightly neovim's functional test suite currently fails to build
       # under nixpkgs 26.11 (missing make target functionaltest__treesitter).
       # We only install the binary and manage nvim config outside Nix, so skip
-      # the test phase. Drop this once the nightly checkPhase builds again.
+      # the test phase. The nightly overlay binds `neovim` directly to the
+      # nightly derivation (not a wrapper over `neovim-unwrapped`), so both
+      # attrs must be patched. Drop once the nightly checkPhase builds again.
       (final: prev: {
+        neovim = prev.neovim.overrideAttrs (_: { doCheck = false; });
         neovim-unwrapped = prev.neovim-unwrapped.overrideAttrs (_: { doCheck = false; });
       })
       # Pull just `tuxedo` from pinned master until the channel catches up.

@@ -17,8 +17,13 @@ in
     enable = true;
     user = "alongo";
     group = "users";
-    # config.xml + index database
-    dataDir = "/var/lib/syncthing";
+    # Syncthing's own config + database. Kept under alongo's home: the service
+    # runs as alongo (so it can read/write ~/sync/tasks directly), and the
+    # module only auto-creates /var/lib/syncthing for its default `syncthing`
+    # user — overriding the user leaves that dir unprovisioned, so syncthing
+    # fails with "mkdir /var/lib/syncthing: permission denied". alongo's home
+    # already exists and is writable, so the daemon creates its dirs there.
+    dataDir = "/home/alongo/.local/share/syncthing";
     # Fully declarative: anything added via the GUI is reverted on restart.
     overrideDevices = true;
     overrideFolders = true;

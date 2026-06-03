@@ -27,7 +27,7 @@
 # ───────────────────────────────────────────────────────────────────────────
 {
   melchior = {
-    id = "";
+    id = "BWMTZG3-2NMNSRC-K6GW2AR-ZMR2ENK-RRQZJY4-PKOIRQU-N6QCMND-7FKBMAI";
     addresses = [ "tcp://melchior.taile2fc00.ts.net:22000" ];
   };
   casper = {

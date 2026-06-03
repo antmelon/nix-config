@@ -2,6 +2,17 @@
 
 let
   publicHost = "melchior.taile2fc00.ts.net";
+
+  # Build FoundryVTT through *our* pkgs, which has allowUnfree = true (set in
+  # modules/common.nix). The foundryvtt flake's own packages output builds with
+  # `nixpkgs.legacyPackages.<system>` (default config), so it refuses the unfree
+  # FoundryVTT zip and any nixpkgs bump that re-evals it breaks the deploy.
+  # This mirrors the flake's `foundryvtt_latest` (= v14 stable).
+  foundryPackage = (pkgs.callPackage "${inputs.foundryvtt}/pkgs/foundryvtt" { }).overrideAttrs
+    (old: old // {
+      majorVersion = "14";
+      releaseType = "stable";
+    });
 in
 {
   services.foundryvtt = {
@@ -13,7 +24,7 @@ in
     routePrefix = "foundry";
     upnp = false;
     minifyStaticFiles = true;
-    package = inputs.foundryvtt.packages.${pkgs.system}.foundryvtt_latest;
+    package = foundryPackage;
   };
 
   # Expose Foundry to the public internet via Tailscale Funnel so friends

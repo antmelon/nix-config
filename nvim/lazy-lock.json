@@ -14,9 +14,11 @@
   "mason.nvim": { "branch": "main", "commit": "ad7146aa61dcaeb54fa900144d768f040090bff0" },
   "mini.ai": { "branch": "main", "commit": "11c57180bc9084089206e211ac7aa598bedc9673" },
   "mini.pairs": { "branch": "main", "commit": "b9aada8c0e59f2b938e98fbf4eae0799eba96ad9" },
+  "mini.pick": { "branch": "main", "commit": "26f94e9c84f529d713de00b900c0a307ca260f35" },
   "neogit": { "branch": "master", "commit": "395ac481e197784e410b59b987fadaf9e7481df1" },
   "nvim-lspconfig": { "branch": "master", "commit": "2b52bc2190c8efde2e4de02d829a138666774c7c" },
   "nvim-treesitter": { "branch": "master", "commit": "645f42e85d8665c91a9911c3896afb57d6b8a923" },
+  "obsidian.nvim": { "branch": "main", "commit": "ed6f386abe83e4dafa9afecf50cd9d9fff072a07" },
   "plenary.nvim": { "branch": "master", "commit": "b9fd5226c2f76c951fc8ed5923d85e4de065e509" },
   "snacks.nvim": { "branch": "main", "commit": "3166af7ec3871424b6da71da6bae278117972244" },
   "todo-comments.nvim": { "branch": "main", "commit": "19d461ddd543e938eb22505fb03fa878800270b6" }

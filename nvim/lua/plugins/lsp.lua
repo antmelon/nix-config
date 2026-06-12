@@ -35,6 +35,17 @@ return {
         capabilities = require("blink.cmp").get_lsp_capabilities(),
       })
 
+      -- clangd on NixOS can't find the standard library on its own (there is no
+      -- /usr/include). --query-driver whitelists the nix gcc wrapper so clangd
+      -- may interrogate it for the real glibc/libstdc++ header paths. This is
+      -- inert on Arch/macOS: no /nix/store driver is ever matched there, so
+      -- clangd keeps resolving headers natively. The NixOS-only companion lives
+      -- in the machine-local ~/.config/clangd/config.yaml, which sets
+      -- CompileFlags.Compiler to that gcc wrapper so clangd actually queries it.
+      vim.lsp.config("clangd", {
+        cmd = { "clangd", "--query-driver=/nix/store/*/bin/*,/etc/profiles/per-user/*/bin/*" },
+      })
+
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
           local map = vim.keymap.set

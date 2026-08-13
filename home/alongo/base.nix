@@ -28,6 +28,7 @@
       bat
       eza
       fzf
+      unzip
 
       # Task manager (todo.txt TUI); tasks live in the Syncthing folder
       tuxedo

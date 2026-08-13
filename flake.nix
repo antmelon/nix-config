@@ -38,7 +38,7 @@
     # DM Assistant — static SPA served on melchior over the tailnet.
     # TODO: point at the default branch once the refactor PR merges.
     dm-assistant = {
-      url = "github:antmelon/dm-assistant/refactor/dm-toolkit-no-ai";
+      url = "github:antmelon/dm-assistant";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

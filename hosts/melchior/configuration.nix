@@ -6,6 +6,7 @@
     ./services/glance.nix
     ./services/backups.nix
     ./services/foundry.nix
+    ./services/dm-assistant.nix
     ./services/vaultwarden.nix
     ./services/adguard.nix
     ./services/devstack.nix

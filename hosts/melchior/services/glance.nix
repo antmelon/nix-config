@@ -86,6 +86,11 @@
                     url = "https://mail.taile2fc00.ts.net/";
                     check-url = "http://127.0.0.1:8025/";
                   }
+                  {
+                    title = "DM Assistant";
+                    url = "https://dm-assistant.taile2fc00.ts.net/";
+                    check-url = "http://127.0.0.1:8085/";
+                  }
                 ];
               }
               {
@@ -99,6 +104,7 @@
                     { title = "Vaultwarden"; url = "https://vault.taile2fc00.ts.net/"; }
                     { title = "AdGuard Home"; url = "https://adguard.taile2fc00.ts.net/"; }
                     { title = "Mailpit"; url = "https://mail.taile2fc00.ts.net/"; }
+                    { title = "DM Assistant"; url = "https://dm-assistant.taile2fc00.ts.net/"; }
                     { title = "Backblaze (backups)"; url = "https://secure.backblaze.com/b2_buckets.htm"; }
                   ];
                 }];

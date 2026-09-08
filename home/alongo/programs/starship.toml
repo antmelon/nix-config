@@ -1,0 +1,45 @@
+# NERV / MAGI readout prompt. Palette mirrors the Evangelion omarchy theme
+# (accent #ff6b1a, amber #e8c88a, alert #ff3b30, muted #585045).
+# This is a literal file (not programs.starship.settings) so the Nerd Font
+# glyphs survive — nix string handling / editors strip PUA codepoints.
+add_newline = true
+command_timeout = 200
+
+format = "[▚ ](#ff6b1a)$directory$git_branch$git_status$cmd_duration$character"
+
+[character]
+success_symbol = "[❯](bold #ff6b1a)"
+error_symbol = "[✗](bold #ff3b30)"
+vimcmd_symbol = "[❮](bold #ffc145)"
+
+[directory]
+style = "bold #e8c88a"
+truncation_length = 2
+truncation_symbol = "…/"
+read_only = "  "
+read_only_style = "#ff3b30"
+repo_root_style = "bold #ff6b1a"
+repo_root_format = "[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) "
+
+[git_branch]
+symbol = " "
+format = "[$symbol$branch](italic #ff6b1a) "
+
+[git_status]
+style = "#ff3b30"
+format = "[$all_status$ahead_behind]($style)"
+ahead      = "⇡${count} "
+diverged   = "⇕⇡${ahead_count}⇣${behind_count} "
+behind     = "⇣${count} "
+conflicted = " "
+up_to_date = " "
+untracked  = "? "
+modified   = " "
+stashed    = " "
+staged     = " "
+renamed    = " "
+deleted    = " "
+
+[cmd_duration]
+min_time = 2000
+format = "[ ${duration}](#585045) "

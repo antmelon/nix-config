@@ -51,8 +51,10 @@
 
     sessionVariables = {
       GOPATH = "$HOME/go";
-      GOROOT = "/usr/local/go";
       GOBIN  = "$HOME/go/bin";
+      # No GOROOT — Go auto-detects it from the binary. A hardcoded
+      # /usr/local/go was stale on balthasar (Arch go lives in /usr/lib/go)
+      # and broke every `go build`, incl. AUR packages.
       SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/personal.txt";
       EDITOR = "nvim";
     };
@@ -98,10 +100,6 @@
         source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish'
       end
       starship init fish | source
-    '';
-
-    interactiveShellInit = ''
-      set fish_greeting
     '';
 
     shellAliases = {
@@ -158,5 +156,9 @@
     };
   };
 
+  # Starship reads a literal TOML file (home/alongo/programs/starship.toml)
+  # rather than programs.starship.settings, so the Nerd Font glyphs in the
+  # git-status symbols survive — nix strings / editors strip PUA codepoints.
   programs.starship.enable = true;
+  xdg.configFile."starship.toml".source = ./programs/starship.toml;
 }

@@ -1,3 +1,16 @@
+local function set_magi_highlights()
+  local hl = vim.api.nvim_set_hl
+  hl(0, "SnacksDashboardHeader", { fg = "#ffb454", bold = true })
+  hl(0, "SnacksDashboardTitle", { fg = "#ffb454", bold = true })
+  hl(0, "SnacksDashboardSpecial", { fg = "#ffb454" })
+  hl(0, "SnacksDashboardDesc", { fg = "#e8c07d" })
+  hl(0, "SnacksDashboardIcon", { fg = "#e8c07d" })
+  hl(0, "SnacksDashboardFile", { fg = "#e8c07d" })
+  hl(0, "SnacksDashboardDir", { fg = "#8a7048" })
+  hl(0, "SnacksDashboardFooter", { fg = "#8a7048", italic = true })
+  hl(0, "SnacksDashboardKey", { fg = "#ff6b6b", bold = true })
+end
+
 return {
   {
     "folke/snacks.nvim",
@@ -9,7 +22,57 @@ return {
       notifier = { enabled = true },
       indent = { enabled = true },
       words = { enabled = true },
+      dashboard = {
+        enabled = true,
+        preset = {
+          header = [[
+___  ___  ___  _____ _____ 
+|  \/  | / _ \|  __ \_   _|
+| .  . |/ /_\ \ |  \/ | |  
+| |\/| ||  _  | | __  | |  
+| |  | || | | | |_\ \_| |_ 
+\_|  |_/\_| |_/\____/\___/ ]],
+          keys = {
+            { icon = " ", key = "f", desc = "Find File", action = function() Snacks.picker.files() end },
+            { icon = " ", key = "g", desc = "Find Text", action = function() Snacks.picker.grep() end },
+            { icon = " ", key = "b", desc = "Buffers", action = function() Snacks.picker.buffers() end },
+            { icon = " ", key = "r", desc = "Recent Files", action = function() Snacks.picker.recent() end },
+            { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+            {
+              icon = " ",
+              key = "c",
+              desc = "Config",
+              action = function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end,
+            },
+            { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
+            { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+          },
+        },
+        sections = {
+          { section = "header" },
+          {
+            align = "center",
+            padding = 1,
+            text = {
+              { "MELCHIOR", hl = "SnacksDashboardSpecial" },
+              { "  ·  ",    hl = "SnacksDashboardDesc" },
+              { "BALTHASAR", hl = "SnacksDashboardSpecial" },
+              { "  ·  ",    hl = "SnacksDashboardDesc" },
+              { "CASPER",   hl = "SnacksDashboardSpecial" },
+            },
+          },
+          { section = "keys", gap = 1, padding = 1 },
+          { icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
+          { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+          { section = "startup" },
+        },
+      },
     },
+    config = function(_, opts)
+      require("snacks").setup(opts)
+      set_magi_highlights()
+      vim.api.nvim_create_autocmd("ColorScheme", { callback = set_magi_highlights })
+    end,
     keys = {
       -- Picker
       { "<leader>ff", function() Snacks.picker.files() end,            desc = "Find files" },

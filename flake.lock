@@ -7,16 +7,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1786624069,
-        "narHash": "sha256-kRyxL4gxZvIB1G4l9unc4KnHto2E39Gs9XeQ0V4AqAg=",
+        "lastModified": 1786645455,
+        "narHash": "sha256-dGw978HOqkJBINSmUETS5sgOJxnRPtgYUhH9+DHbOME=",
         "owner": "antmelon",
         "repo": "dm-assistant",
-        "rev": "647790f5843c90ddb06b3734214a6202a597789d",
+        "rev": "77ec4852818dd2916102ab164867254ea0e08083",
         "type": "github"
       },
       "original": {
         "owner": "antmelon",
-        "ref": "refactor/dm-toolkit-no-ai",
         "repo": "dm-assistant",
         "type": "github"
       }

@@ -40,12 +40,7 @@
       # Editor
       neovim
 
-      # Dev toolchain
-      gcc
-      cmake
-      ninja
-      rustc
-      cargo
+      # Dev toolchain (compilers live in ./dev-toolchain.nix)
       python3
     ];
 

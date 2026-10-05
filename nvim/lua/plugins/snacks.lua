@@ -1,16 +1,3 @@
-local function set_magi_highlights()
-  local hl = vim.api.nvim_set_hl
-  hl(0, "SnacksDashboardHeader", { fg = "#ffb454", bold = true })
-  hl(0, "SnacksDashboardTitle", { fg = "#ffb454", bold = true })
-  hl(0, "SnacksDashboardSpecial", { fg = "#ffb454" })
-  hl(0, "SnacksDashboardDesc", { fg = "#e8c07d" })
-  hl(0, "SnacksDashboardIcon", { fg = "#e8c07d" })
-  hl(0, "SnacksDashboardFile", { fg = "#e8c07d" })
-  hl(0, "SnacksDashboardDir", { fg = "#8a7048" })
-  hl(0, "SnacksDashboardFooter", { fg = "#8a7048", italic = true })
-  hl(0, "SnacksDashboardKey", { fg = "#ff6b6b", bold = true })
-end
-
 return {
   {
     "folke/snacks.nvim",
@@ -68,11 +55,6 @@ ___  ___  ___  _____ _____
         },
       },
     },
-    config = function(_, opts)
-      require("snacks").setup(opts)
-      set_magi_highlights()
-      vim.api.nvim_create_autocmd("ColorScheme", { callback = set_magi_highlights })
-    end,
     keys = {
       -- Picker
       { "<leader>ff", function() Snacks.picker.files() end,            desc = "Find files" },

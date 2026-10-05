@@ -78,7 +78,7 @@
             useGlobalPkgs   = true;
             useUserPackages = true;
             extraSpecialArgs = { inherit inputs; };
-            users.alongo = { imports = [ ./home/alongo/base.nix ./home/alongo/darwin.nix ./home/alongo/programs/syncthing.nix ]; };
+            users.alongo = { imports = [ ./home/alongo/base.nix ./home/alongo/dev-toolchain.nix ./home/alongo/darwin.nix ./home/alongo/programs/syncthing.nix ]; };
           };
         }
       ];

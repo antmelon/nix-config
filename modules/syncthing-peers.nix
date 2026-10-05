@@ -35,7 +35,7 @@
     addresses = [ "tcp://casper.taile2fc00.ts.net:22000" ];
   };
   balthasar = {
-    id = "KPVHA5V-DQTACG6-ESL5K7D-RQ4DWDG-DKYN7ZQ-HHW7GJ7-MVAV2FO-3QAAOAJ";
+    id = "76AZXSQ-OPMXQTX-JDQFFU6-QBCJGXZ-LO5ACZP-NHEABLC-ZVEKSEF-UKKLNAZ";
     addresses = [ "tcp://balthasar.taile2fc00.ts.net:22000" ];
   };
 }

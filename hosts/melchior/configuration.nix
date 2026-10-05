@@ -63,7 +63,7 @@
     useGlobalPkgs   = true;
     useUserPackages = true;
     extraSpecialArgs = { inherit inputs; };
-    users.alongo = { imports = [ ../../home/alongo/base.nix ../../home/alongo/linux.nix ]; };
+    users.alongo = { imports = [ ../../home/alongo/base.nix ../../home/alongo/dev-toolchain.nix ../../home/alongo/linux.nix ]; };
   };
 
   # Per-service modules live in ./services/ — add new ones to imports above.

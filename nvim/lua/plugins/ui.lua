@@ -4,7 +4,7 @@ return {
     event = "VeryLazy",
     opts = {
       options = {
-        theme = "catppuccin-mocha",
+        theme = require("nerv.lualine"),
         section_separators = "",
         component_separators = "|",
         globalstatus = true,

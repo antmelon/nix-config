@@ -7,6 +7,7 @@
     ./services/backups.nix
     ./services/foundry.nix
     ./services/dm-assistant.nix
+    ./services/hermes.nix
     ./services/vaultwarden.nix
     ./services/adguard.nix
     ./services/devstack.nix

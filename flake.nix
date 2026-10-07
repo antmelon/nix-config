@@ -41,6 +41,12 @@
       url = "github:antmelon/dm-assistant";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Hermes Agent — personal agent service on melchior. Not following our
+    # nixpkgs: its Python lock pins an interpreter family that our unstable
+    # may not match. Bump deliberately (`nix flake update hermes-agent`);
+    # upstream treats Nix as best-effort and main can break.
+    hermes-agent.url = "github:NousResearch/hermes-agent";
   };
 
   outputs = { self, nixpkgs, nix-darwin, home-manager, sops-nix, neovim-nightly-overlay, foundryvtt, ... }@inputs:
@@ -93,6 +99,7 @@
         ./hosts/melchior/configuration.nix
         sops-nix.nixosModules.sops
         foundryvtt.nixosModules.foundryvtt
+        inputs.hermes-agent.nixosModules.default
       ];
     };
 

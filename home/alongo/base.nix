@@ -122,7 +122,11 @@
       updatebalthasar = "home-manager switch --flake ~/.config/nix-config#balthasar";
       # nixos-rebuild from the flake's pinned nixpkgs, so this works from hosts
       # that don't have it installed (balthasar, casper); melchior builds itself.
-      updatemelchior  = "nix run --inputs-from ~/.config/nix-config nixpkgs#nixos-rebuild -- switch --flake ~/.config/nix-config#melchior --target-host melchior --build-host melchior --sudo";
+      # Two steps: `boot` builds + installs the generation without restarting
+      # anything, then the switch runs as a detached unit on melchior. A plain
+      # remote `switch` pipes over SSH, so when it restarts tailscaled/sshd the
+      # dropped connection kills it halfway (services stopped, sudo broken).
+      updatemelchior  = "nix run --inputs-from ~/.config/nix-config nixpkgs#nixos-rebuild -- boot --flake ~/.config/nix-config#melchior --target-host melchior --build-host melchior --sudo && ssh melchior 'sudo systemd-run --unit=nixos-switch --collect --wait --service-type=exec /nix/var/nix/profiles/system/bin/switch-to-configuration switch; journalctl -u nixos-switch -o cat --since -10min | tail -15'";
 
       # Edit configs
       editcasper    = "nvim ~/.config/nix-config/hosts/casper/configuration.nix";

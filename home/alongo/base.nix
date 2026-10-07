@@ -84,6 +84,11 @@
       init.defaultBranch = "main";
       pull.rebase        = true;
       core.editor        = "nvim";
+      # HTTPS auth to GitHub via `gh auth login` (what `gh auth setup-git`
+      # would write, but this file is read-only). "" clears inherited helpers;
+      # gh is resolved from PATH (mise), so a host without gh just prompts.
+      credential."https://github.com".helper      = [ "" "!gh auth git-credential" ];
+      credential."https://gist.github.com".helper = [ "" "!gh auth git-credential" ];
     };
   };
 

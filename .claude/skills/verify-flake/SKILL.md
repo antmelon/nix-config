@@ -41,7 +41,7 @@ The script detects the host itself (`hostname -s`, or the OS as a fallback).
 Combine flags freely, e.g. `./scripts/check.sh --build --melchior`.
 
 What can't be verified from here:
-- casper can only be **evaluated** from Linux. Nothing builds x86_64-darwin
+- casper can only be **evaluated** from Linux. Nothing builds aarch64-darwin
   there. Say so rather than claiming casper is verified.
 - balthasar can only be evaluated from casper.
 - Don't `nix build` melchior's toplevel off melchior. It tries to build ~500
@@ -54,8 +54,7 @@ what changed.
 
 ## 3. Read the output
 
-- `evaluation warning: Nixpkgs 26.05 will be the last release to support
-  x86_64-darwin` and `Git tree … is dirty` are expected. Ignore them.
+- `Git tree … is dirty` is expected. Ignore it.
 - **melchior drift warning** ("melchior's clone is at X, which this checkout
   doesn't contain") means someone committed on melchior without pushing.
   Deploying from here would roll those commits back. Tell the user, and don't

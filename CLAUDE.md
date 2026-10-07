@@ -7,7 +7,7 @@ this file is what isn't obvious from it.
 
 | Host | OS / manager | Flake output |
 |------|--------------|--------------|
-| casper | macOS, nix-darwin + HM (x86_64-darwin) | `darwinConfigurations.casper` |
+| casper | macOS (M1), nix-darwin + HM (aarch64-darwin) | `darwinConfigurations.casper` |
 | balthasar | Arch/Omarchy, **home-manager only** | `homeConfigurations.balthasar` |
 | melchior | NixOS server | `nixosConfigurations.melchior` |
 
@@ -51,6 +51,16 @@ from any host and builds on melchior.
   user's call. Verify, then ask.
 - SSH to melchior can hang on a Tailscale SSH browser check. If it does, ask
   the user to approve the link instead of retrying.
+- Never run a plain remote `nixos-rebuild switch --target-host melchior`. When
+  a switch restarts `tailscaled`/`sshd`, the dropped SSH connection kills it
+  partway through. `updatemelchior` avoids this: it runs `boot`, then the
+  switch as a detached `systemd-run` unit.
+- **Half-finished switch** (services inactive, and `sudo` failing with
+  `PAM account management error: Module is unknown` because the old setuid
+  wrappers are paired with the new PAM config): root over Tailscale SSH still
+  works, since it skips PAM. The user runs:
+  `ssh root@melchior 'systemd-run --unit=finish-switch --collect --service-type=exec /nix/var/nix/profiles/system/bin/switch-to-configuration switch'`.
+  Claude can't run root writes on melchior, so hand this command over.
 
 ## Non-obvious constraints
 
@@ -58,11 +68,12 @@ from any host and builds on melchior.
   daemons. Don't add it to the flake.
 - **casper's tailscale is the Homebrew `tailscale-app` cask.** nix-darwin's
   module runs in userspace-networking mode and can't push MagicDNS settings.
-- **Temporary pins and overlays** in `flake.nix` (`nixpkgs-tuxedo`, neovim
-  `doCheck = false`) each say when to drop them. Check that before adding
-  another workaround.
-- **x86_64-darwin warning:** "Nixpkgs 26.05 will be the last release to support
-  x86_64-darwin" shows up on every casper eval. It's expected and not a failure.
+- **Temporary overlays** in `flake.nix` (currently neovim `doCheck = false`)
+  each say when to drop them. Check that before adding another workaround.
+- **Bumping `foundryvtt`** changes the Foundry build, and its zip is a
+  `requireFile`: the user must download the new zip from their Foundry account
+  and add it to melchior's store before `updatemelchior` will work. Leave
+  `foundryvtt` out of routine `nix flake update`s unless they're ready for that.
 - **UIDs differ:** alongo is 1001 on melchior and 1000 on balthasar. That's why
   the NFS export in `hosts/melchior/services/files.nix` uses
   `all_squash,anonuid=1001`.

@@ -8,7 +8,7 @@ Multi-machine NixOS, nix-darwin, and standalone home-manager configurations name
 
 | Name | Type | OS | Manager | Status | Purpose |
 |------|------|----|---------|--------|---------|
-| **casper** | 🍎 MacBook Pro | macOS | nix-darwin + home-manager | ✅ Active | Personal laptop (Intel x86_64) |
+| **casper** | 🍎 MacBook Pro | macOS | nix-darwin + home-manager | ✅ Active | Personal laptop (Apple M1, aarch64) |
 | **balthasar** | 🖥️ Desktop | Arch Linux (Omarchy) | home-manager only | ✅ Active | Desktop workstation (x86_64) |
 | **melchior** | 🖥️ Server | NixOS | NixOS + home-manager | ✅ Active | Home server: self-hosted apps on the tailnet, LAN DNS, file/music hub, backups |
 
@@ -134,7 +134,8 @@ melchior can only be fully built **on melchior**: the Foundry zip is a `requireF
 # Apply each machine (aliases defined in base.nix)
 updatecasper       # sudo darwin-rebuild switch --flake ~/.config/nix-config#casper
 updatebalthasar    # home-manager switch --flake ~/.config/nix-config#balthasar
-updatemelchior     # nixos-rebuild switch for melchior; works from any host, builds on melchior
+updatemelchior     # builds on melchior, installs with `boot`, then switches in a detached
+                   #   unit so a dropped SSH connection can't kill it halfway
 
 # Update flake inputs
 cd ~/.config/nix-config
@@ -276,11 +277,10 @@ Also on melchior:
 | `foundryvtt` | Foundry module; the package is rebuilt through our `pkgs` so `allowUnfree` applies |
 | `dm-assistant` | The DM Assistant site served on melchior |
 | `hermes-agent` | Hermes module + package; deliberately **doesn't** follow our nixpkgs |
-| `nixpkgs-tuxedo` (master) | **Temporary.** Supplies `tuxedo` until nixpkgs-unstable has it |
 
-Overlays in `flake.nix`, each with a removal condition noted in place:
-- Nightly Neovim builds with `doCheck = false` (its test suite fails under nixpkgs 26.11)
-- `tuxedo` comes from the pinned master input
+Overlay in `flake.nix` (with its removal condition noted in place): nightly Neovim builds with `doCheck = false`, because its test suite fails under nixpkgs 26.11.
+
+Bumping `foundryvtt` changes the Foundry build, and the new zip has to be downloaded from your Foundry account and added to melchior's store by hand. Update the other inputs with `nix flake update nixpkgs home-manager …` to leave Foundry alone.
 
 ## 🛠️ Development Workflow
 
@@ -392,11 +392,9 @@ The `.gitignore` is configured to protect you from accidentally committing priva
 ### casper (MacBook Pro)
 
 - [ ] Generate casper's age key and enable it in `.sops.yaml`
-- [ ] Plan ahead: nixpkgs 26.05 is the last release supporting x86_64-darwin
 
 ### Repo
 
-- [ ] Drop the `nixpkgs-tuxedo` pin once nixpkgs-unstable ships tuxedo
 - [ ] Drop the neovim `doCheck = false` overlay once the nightly test suite builds again
 - [ ] Export `templates/polyglot-devshell` as a flake template
 

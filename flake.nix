@@ -4,12 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    # Temporary: tuxedo landed on master 2026-06-02 but the unstable channel
-    # hasn't advanced past it yet. Pin master here and overlay only `tuxedo`
-    # from it (see overlays below). Drop this input + overlay once
-    # nixpkgs-unstable includes tuxedo (then `tuxedo` resolves from nixpkgs).
-    nixpkgs-tuxedo.url = "github:NixOS/nixpkgs/master";
-
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -63,16 +57,12 @@
         neovim = prev.neovim.overrideAttrs (_: { doCheck = false; });
         neovim-unwrapped = prev.neovim-unwrapped.overrideAttrs (_: { doCheck = false; });
       })
-      # Pull just `tuxedo` from pinned master until the channel catches up.
-      (final: prev: {
-        tuxedo = inputs.nixpkgs-tuxedo.legacyPackages.${prev.stdenv.hostPlatform.system}.tuxedo;
-      })
     ];
   in {
 
-    # casper — MacBook Pro (Intel, nix-darwin)
+    # casper — MacBook Pro (M1, nix-darwin)
     darwinConfigurations."casper" = nix-darwin.lib.darwinSystem {
-      system = "x86_64-darwin";
+      system = "aarch64-darwin";
       specialArgs = { inherit inputs; };
       modules = [
         { nixpkgs.overlays = overlays; }

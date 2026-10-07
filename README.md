@@ -89,11 +89,15 @@ sudo nixos-rebuild switch --flake .#melchior
 ### Verifying Configs
 
 ```bash
-# Eval-only check of all systems (fast)
+# flake check + eval all three systems (fast, works from any host)
 ./scripts/check.sh
 
-# Full build (slower, catches more issues)
+# + build this machine's own config (no activation)
 ./scripts/check.sh --build
+
+# + build on melchior and show what a switch would change there; also warns
+#   if melchior's clone has commits this checkout doesn't
+./scripts/check.sh --melchior
 ```
 
 ## 📝 Common Commands

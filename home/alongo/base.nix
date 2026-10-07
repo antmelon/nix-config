@@ -120,7 +120,9 @@
       # System updates
       updatecasper    = "sudo darwin-rebuild switch --flake ~/.config/nix-config#casper";
       updatebalthasar = "home-manager switch --flake ~/.config/nix-config#balthasar";
-      updatemelchior  = "nixos-rebuild switch --flake ~/.config/nix-config#melchior --target-host melchior --use-remote-sudo";
+      # nixos-rebuild from the flake's pinned nixpkgs, so this works from hosts
+      # that don't have it installed (balthasar, casper); melchior builds itself.
+      updatemelchior  = "nix run --inputs-from ~/.config/nix-config nixpkgs#nixos-rebuild -- switch --flake ~/.config/nix-config#melchior --target-host melchior --build-host melchior --sudo";
 
       # Edit configs
       editcasper    = "nvim ~/.config/nix-config/hosts/casper/configuration.nix";

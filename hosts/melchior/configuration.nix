@@ -11,6 +11,8 @@
     ./services/adguard.nix
     ./services/devstack.nix
     ./services/syncthing.nix
+    ./services/files.nix
+    ./services/navidrome.nix
     ../../modules/common.nix
     inputs.home-manager.nixosModules.home-manager
   ];

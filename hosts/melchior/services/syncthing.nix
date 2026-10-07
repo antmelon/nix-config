@@ -3,8 +3,8 @@
 # Syncthing hub. melchior is the always-on node, so it runs as a NixOS system
 # service (starts at boot with no login session, unlike a home-manager user
 # service). It shares ~/sync/tasks with every client listed in the peer
-# registry; tuxedo's todo.txt lives in that folder. ~/Music is shared with
-# balthasar only, for omatunes.
+# registry; tuxedo's todo.txt lives in that folder. (Music is served over NFS
+# instead — see ./files.nix.)
 #
 # Device IDs come from ../../../modules/syncthing-peers.nix — see that file for
 # the one-time bootstrap procedure. Peers whose id is still "" are filtered out.
@@ -48,14 +48,6 @@ in
         path = "/home/alongo/sync/tasks";
         label = "Tasks";
         devices = lib.attrNames knownPeers;
-      };
-
-      # Music library for omatunes on balthasar. Send-receive on both ends:
-      # omatunes writes tags (tag editor, likes) into the files themselves.
-      folders.music = {
-        path = "/home/alongo/Music";
-        label = "Music";
-        devices = lib.intersectLists [ "balthasar" ] (lib.attrNames knownPeers);
       };
     };
   };

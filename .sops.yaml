@@ -2,17 +2,17 @@
 # This file contains only PUBLIC keys - safe to commit to Git
 
 keys:
-  # Personal key for editing secrets from any machine
-  - &personal age1c0tt9hneu4mqf35m4zkva8a88axcs94pkcavya0rrhlcm932f4nql56glc
-  
-  # Casper - MacBook Pro (laptop)
-  # - &casper age1...
-  
-  # Melchior - Home Server
+  # Personal key for editing secrets from any machine.
+  # Private half: ~/.config/sops/age/personal.txt (backed up in Vaultwarden).
+  # Rotated 2026-10-07 after the previous key was lost.
+  - &personal age1kucs04zqnz2ch9ejk5u740xzqwla3st3mp5myd78la4g7tqjf38scn2lyq
+
+  # Melchior - Home Server. Derived from /etc/ssh/ssh_host_ed25519_key with
+  # ssh-to-age; sops-nix decrypts with it at activation.
   - &melchior age1kd4x5v53fshwaadhz48lfx36lj9xpddhr5wsg3zuglge0vm50aps9ganwp
-  
-  # Balthasar - Desktop
-  - &balthasar age1g2zcadsn7ygy08n30kgh920w9w27aum960vgrhyencp3cuzpc4rsaqxxvp
+
+  # Casper and Balthasar don't run sops-nix, so they have no host keys here;
+  # editing from them uses the personal key.
 
 creation_rules:
   # Casper secrets (MacBook Pro)
@@ -20,29 +20,23 @@ creation_rules:
     key_groups:
       - age:
           - *personal
-          # - *casper
-  
+
   # Melchior secrets (Home Server)
   - path_regex: secrets/melchior\.yaml$
     key_groups:
       - age:
           - *personal
           - *melchior
-          - *balthasar
-  
+
   # Balthasar secrets (Desktop)
   - path_regex: secrets/balthasar\.yaml$
     key_groups:
       - age:
           - *personal
-          - *balthasar
-  
+
   # Shared secrets (accessible from all machines)
   - path_regex: secrets/shared\.yaml$
     key_groups:
       - age:
           - *personal
-          # - *casper
           - *melchior
-          - *balthasar
-

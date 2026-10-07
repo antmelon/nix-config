@@ -102,6 +102,34 @@
       starship init fish | source
     '';
 
+    # `secret <casper|melchior|balthasar|shared>` edits secrets/<name>.yaml.
+    # Uses the personal age key when this machine has it; otherwise falls back
+    # to the SSH host key (melchior), converted with ssh-to-age the same way
+    # sops-nix does. Pointing sops at the raw SSH key doesn't work: the
+    # recipients are X25519 age keys, not ssh-ed25519 ones.
+    functions.secret = {
+      description = "Edit a sops secrets file in nix-config";
+      body = ''
+        if test (count $argv) -ne 1
+          echo "usage: secret <casper|melchior|balthasar|shared>" >&2
+          return 1
+        end
+        set -l file ~/.config/nix-config/secrets/$argv[1].yaml
+        if test -r "$SOPS_AGE_KEY_FILE"
+          sops $file
+        else if test -e /etc/ssh/ssh_host_ed25519_key
+          echo "secret: no personal key at $SOPS_AGE_KEY_FILE, using this host's SSH key" >&2
+          sudo env EDITOR=(command -v $EDITOR) sh -c \
+            'SOPS_AGE_KEY=$(nix run nixpkgs#ssh-to-age -- -private-key -i /etc/ssh/ssh_host_ed25519_key) exec sops "$1"' \
+            sh $file
+          and sudo chown $USER: $file
+        else
+          echo "secret: no age key here. Restore the personal key from Vaultwarden to $SOPS_AGE_KEY_FILE" >&2
+          return 1
+        end
+      '';
+    };
+
     shellAliases = {
       # Navigation
       ll = "eza -l";
@@ -141,11 +169,11 @@
       edithome      = "nvim ~/.config/nix-config/home/alongo/base.nix";
       editflake     = "nvim ~/.config/nix-config/flake.nix";
 
-      # Edit secrets
-      secretcasper    = "sops ~/.config/nix-config/secrets/casper.yaml";
-      secretmelchior  = "sops ~/.config/nix-config/secrets/melchior.yaml";
-      secretbalthasar = "sops ~/.config/nix-config/secrets/balthasar.yaml";
-      secretshared    = "sops ~/.config/nix-config/secrets/shared.yaml";
+      # Edit secrets (see the `secret` function below)
+      secretcasper    = "secret casper";
+      secretmelchior  = "secret melchior";
+      secretbalthasar = "secret balthasar";
+      secretshared    = "secret shared";
 
       # Tasks (todo.txt synced across the Magi via Syncthing)
       t = "tuxedo ~/sync/tasks/todo.txt";

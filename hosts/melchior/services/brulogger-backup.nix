@@ -65,7 +65,10 @@ in
   # Restore steps are in the BruLogger README ("Backups").
 
   # KEY=VALUE env file:
-  #   PGPASSWORD  the database password
+  #   PGPASSWORD  the password of brulogger_backup, a read-only role (login,
+  #     bypassrls, pg_read_all_data) created by hand in Supabase's SQL editor.
+  #     bypassrls because brews and storage.objects have row-level security,
+  #     and pg_dump refuses to dump a table it can only partly see.
   #   RCLONE_CONFIG_SUPABASE_ACCESS_KEY_ID, RCLONE_CONFIG_SUPABASE_SECRET_ACCESS_KEY
   #     a Storage S3 access key (Supabase dashboard: Project Settings > Storage)
   sops.secrets."brulogger-backup/env" = { };
@@ -80,7 +83,7 @@ in
       PGHOST = "aws-1-us-east-2.pooler.supabase.com";
       PGPORT = "5432";
       PGDATABASE = "postgres";
-      PGUSER = "postgres.${projectRef}";
+      PGUSER = "brulogger_backup.${projectRef}"; # <role>.<project> on the pooler
       PGSSLMODE = "require";
       # rclone remote "supabase:" from environment variables only; no config file
       RCLONE_CONFIG = "/dev/null";

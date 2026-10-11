@@ -27,6 +27,8 @@ let
       cd "$STATE_DIRECTORY"
       mkdir -p db photos
       stamp=$(date -u +%Y-%m-%dT%H%MZ)
+      # A failed run leaves no half-written dump behind
+      trap 'rm -f "db/.brulogger-$stamp.dump.tmp"' EXIT
 
       # Database: users (auth), brews (public) and bucket/object records
       # (storage), schema and data, in pg_dump's compressed custom format.

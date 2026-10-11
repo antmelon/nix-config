@@ -5,6 +5,7 @@
     ./hardware-configuration.nix
     ./services/glance.nix
     ./services/backups.nix
+    ./services/brulogger-backup.nix
     ./services/foundry.nix
     ./services/dm-assistant.nix
     ./services/hermes.nix

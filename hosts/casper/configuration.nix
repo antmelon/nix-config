@@ -51,10 +51,33 @@
   # local-DNS, etc.). nix-darwin's services.tailscale runs tailscaled
   # in userspace-networking mode, which deliberately does not touch
   # system DNS.
+  #
+  # Everything else is GUI apps, plus the tools that don't fit Nix well (rbenv
+  # builds rubies against Homebrew's openssl/libyaml; cocoapods wants a
+  # Homebrew-style ruby). Casks already in /Applications from the old Intel
+  # Homebrew need `brew install --cask --adopt <name>` once, or bundle stops
+  # with "already an App".
   homebrew = {
     enable = true;
     onActivation.autoUpdate = false;
-    casks = [ "tailscale-app" ];
+    brews = [
+      "rbenv"
+      "cocoapods"
+    ];
+    casks = [
+      "tailscale-app"
+      "alacritty"
+      "amethyst"
+      "bitwarden"
+      "discord"
+      "hiddenbar"
+      "mailspring"
+      "spotify"
+      "steam"
+      "the-unarchiver"
+      # Not warp: its cask checksum lags Warp's releases, and a failed
+      # download fails the whole activation. Warp updates itself anyway.
+    ];
   };
 
   # Stay reachable on the tailnet when plugged in (battery sleep behavior

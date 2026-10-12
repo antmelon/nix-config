@@ -35,8 +35,11 @@ let
       pg_dump --format=custom --schema=public --schema=auth --schema=storage \
         ${pkgs.lib.concatMapStringsSep " " (t: "--exclude-table-data=${t}") skipData} \
         --file="db/.brulogger-$stamp.dump.tmp"
-      # A dump that doesn't list the brews data isn't a backup
-      pg_restore --list "db/.brulogger-$stamp.dump.tmp" | grep -q ' TABLE DATA public brews '
+      # A dump that doesn't list the brews data isn't a backup. Read the whole
+      # listing before grepping: piped straight into grep -q, pg_restore hits a
+      # closed pipe once grep finds the match and exits, and pipefail fails the run.
+      toc=$(pg_restore --list "db/.brulogger-$stamp.dump.tmp")
+      grep -q ' TABLE DATA public brews ' <<<"$toc"
       mv "db/.brulogger-$stamp.dump.tmp" "db/brulogger-$stamp.dump"
 
       # Photos: mirror the bucket. Deletions are mirrored too; restic's snapshots

@@ -39,7 +39,7 @@
   # "casper"; fix the address if it's renamed in the Tailscale console.
   # Fill in the ID with step 4 above once home-manager has run there.
   casper-linux = {
-    id = "";
+    id = "O2UM656-WQA5LKA-LT6PPSV-HLGX4DR-XGU4YDL-PBL3U6Q-LCHDQCA-3D2JHQ2";
     addresses = [ "tcp://casper-1.taile2fc00.ts.net:22000" ];
   };
   balthasar = {

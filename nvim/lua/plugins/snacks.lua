@@ -9,6 +9,14 @@ return {
       notifier = { enabled = true },
       indent = { enabled = true },
       words = { enabled = true },
+      -- Writing mode: <leader>z, and what nerv-zen opens notes in. Prose
+      -- column narrower than the 120 default.
+      zen = {
+        toggles = { dim = true, git_signs = false, diagnostics = false },
+        -- Solid backdrop in the NERV bg: a see-through one leaves a dimmed
+        -- copy of the same buffer on either side of the column.
+        win = { width = 90, backdrop = { transparent = false, blend = 0, bg = "#0a0a0a" } },
+      },
       dashboard = {
         enabled = true,
         preset = {
@@ -67,6 +75,8 @@ ___  ___  ___  _____ _____
       { "<leader>fc", function() Snacks.picker.command_history() end,  desc = "Command history" },
       -- Terminal
       { "<leader>tt", function() Snacks.terminal.toggle() end, desc = "Toggle terminal", mode = { "n", "t" } },
+      -- Zen
+      { "<leader>z", function() Snacks.zen() end, desc = "Zen mode" },
       -- Notifications
       { "<leader>fn", function() Snacks.notifier.show_history() end,   desc = "Notification history" },
     },

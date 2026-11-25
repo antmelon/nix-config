@@ -2,7 +2,7 @@
 # Verifies the flake without activating anything. Host-aware: every host can
 # evaluate all three configs, but each can only *build* some of them.
 #
-#   ./scripts/check.sh               flake check + eval casper, balthasar, melchior
+#   ./scripts/check.sh               flake check + eval casper, casper-linux, balthasar, melchior
 #   ./scripts/check.sh --build       + build this machine's own config
 #   ./scripts/check.sh --melchior    + build on melchior and show what a switch
 #                                      would change there (dry-activate)
@@ -29,7 +29,9 @@ done
 # managed by nix-darwin.
 if [[ -z "$HOST" ]]; then
   case "$(hostname -s)" in
-    casper|balthasar|melchior) HOST="$(hostname -s)" ;;
+    # casper dual-boots: the same hostname on macOS and on its Omarchy side.
+    casper) [[ "$(uname -s)" == Darwin ]] && HOST=casper || HOST=casper-linux ;;
+    balthasar|melchior) HOST="$(hostname -s)" ;;
     *)
       if [[ "$(uname -s)" == Darwin ]]; then HOST=casper
       elif [[ -e /etc/NIXOS ]]; then HOST=melchior
@@ -41,6 +43,7 @@ fi
 
 declare -A ATTR=(
   [casper]=darwinConfigurations.casper.system
+  [casper-linux]=homeConfigurations.casper-linux.activationPackage
   [balthasar]=homeConfigurations.balthasar.activationPackage
   [melchior]=nixosConfigurations.melchior.config.system.build.toplevel
 )
@@ -60,7 +63,7 @@ echo ""
 echo "=== flake check ==="
 nix flake check
 
-for h in casper balthasar melchior; do
+for h in casper casper-linux balthasar melchior; do
   echo ""
   echo "=== $h (eval only) ==="
   nix eval --raw ".#${ATTR[$h]}.drvPath" > /dev/null

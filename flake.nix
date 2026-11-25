@@ -103,5 +103,16 @@
       modules = [ ./hosts/balthasar/configuration.nix ];
     };
 
+    # casper's Omarchy side — Asahi on the same M1, dual-booted with macOS
+    # (home-manager only, like balthasar)
+    homeConfigurations."casper-linux" = home-manager.lib.homeManagerConfiguration {
+      pkgs = import nixpkgs {
+        system   = "aarch64-linux";
+        overlays = overlays;
+      };
+      extraSpecialArgs = { inherit inputs; };
+      modules = [ ./hosts/casper-linux/configuration.nix ];
+    };
+
   };
 }

@@ -1,6 +1,7 @@
 # nix-config ("the Magi")
 
-One flake, three machines. README.md covers layout and day-to-day commands;
+One flake, three machines, four configs (casper dual-boots macOS and Omarchy).
+README.md covers layout and day-to-day commands;
 this file is what isn't obvious from it.
 
 ## Hosts and what reaches them
@@ -8,24 +9,26 @@ this file is what isn't obvious from it.
 | Host | OS / manager | Flake output |
 |------|--------------|--------------|
 | casper | macOS (M1), nix-darwin + HM (aarch64-darwin) | `darwinConfigurations.casper` |
+| casper-linux | casper's Omarchy side (Asahi, aarch64-linux), **home-manager only** | `homeConfigurations.casper-linux` |
 | balthasar | Arch/Omarchy, **home-manager only** | `homeConfigurations.balthasar` |
 | melchior | NixOS server | `nixosConfigurations.melchior` |
 
 Shared files reach more than one host, so check every change against each host
 it lands on:
 
-- `home/alongo/base.nix` (+ `programs/{nvim,tmux,fish-extras}.nix`): all three
-- `home/alongo/linux.nix`: balthasar, melchior
+- `home/alongo/base.nix` (+ `programs/{nvim,tmux,fish-extras}.nix`): all of them
+- `home/alongo/linux.nix`: balthasar, casper-linux, melchior
 - `home/alongo/darwin.nix`: casper
-- `home/alongo/dev-toolchain.nix`: casper, melchior. **Not balthasar.** Nix's
+- `home/alongo/dev-toolchain.nix`: casper, melchior. **Not balthasar or casper-linux.** Nix's
   gcc on Arch links against Nix's glibc with `/usr/lib` first on RUNPATH and
   breaks binaries at runtime (`undefined symbol: __pointer_chk_guard`).
-  balthasar uses Arch gcc + rustup. Don't move compilers back into base.nix.
-- `home/alongo/programs/syncthing.nix`: casper, balthasar (melchior runs
+  balthasar and casper-linux use Arch gcc + rustup. Don't move compilers back
+  into base.nix.
+- `home/alongo/programs/syncthing.nix`: casper, casper-linux, balthasar (melchior runs
   syncthing as a system service in `hosts/melchior/services/syncthing.nix`)
 - `modules/common.nix`: casper, melchior (balthasar sets nix.conf via HM in its
   own configuration.nix)
-- `modules/syncthing-peers.nix`, `flake.nix`, `flake.lock`: all three
+- `modules/syncthing-peers.nix`, `flake.nix`, `flake.lock`: all of them
 
 ## Verifying
 
@@ -41,7 +44,8 @@ untracked files.
 
 The aliases live in `home/alongo/base.nix`:
 `updatebalthasar`, `updatecasper`, `updatemelchior`. `updatemelchior` works
-from any host and builds on melchior.
+from any host and builds on melchior. `updatecasper` is darwin-rebuild on
+macOS; hosts/casper-linux overrides it to the casper-linux home-manager switch.
 
 - melchior has its **own clone** of this repo and is sometimes deployed from
   it. Before deploying melchior from elsewhere, run `./scripts/check.sh --melchior`.
@@ -66,6 +70,9 @@ from any host and builds on melchior.
 
 - **balthasar's tailscale is pacman + systemd, not Nix.** HM can't run system
   daemons. Don't add it to the flake.
+- **casper-linux is its own tailnet node and Syncthing device**, apart from
+  macOS casper: `casper-1` in MagicDNS unless renamed, and `casper-linux` in
+  syncthing-peers.nix. Its tailscale is pacman + systemd, like balthasar's.
 - **casper's tailscale is the Homebrew `tailscale-app` cask.** nix-darwin's
   module runs in userspace-networking mode and can't push MagicDNS settings.
 - **Temporary overlays** in `flake.nix` (currently neovim `doCheck = false`)

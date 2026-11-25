@@ -9,6 +9,7 @@ Multi-machine NixOS, nix-darwin, and standalone home-manager configurations name
 | Name | Type | OS | Manager | Status | Purpose |
 |------|------|----|---------|--------|---------|
 | **casper** | 🍎 MacBook Pro | macOS | nix-darwin + home-manager | ✅ Active | Personal laptop (Apple M1, aarch64) |
+| **casper-linux** | 🍎 MacBook Pro | Arch Linux ARM (Omarchy on Asahi) | home-manager only | 🚧 Setting up | casper's Omarchy side, dual-booted with macOS (aarch64) |
 | **balthasar** | 🖥️ Desktop | Arch Linux (Omarchy) | home-manager only | ✅ Active | Desktop workstation (x86_64) |
 | **melchior** | 🖥️ Server | NixOS | NixOS + home-manager | ✅ Active | Home server: self-hosted apps on the tailnet, LAN DNS, file/music hub, backups |
 
@@ -103,6 +104,11 @@ sudo darwin-rebuild switch --flake .#casper
 # hand; afterwards home-manager writes ~/.config/nix/nix.conf itself.
 NIX_CONFIG="experimental-features = nix-command flakes" \
   home-manager switch --flake .#balthasar
+
+# casper's Omarchy side (Arch on Asahi, home-manager only). Same first run as
+# balthasar; -b backs up the dotfiles Omarchy put there first.
+NIX_CONFIG="experimental-features = nix-command flakes" \
+  nix run home-manager -- switch -b hm-backup --flake .#casper-linux
 
 # melchior (NixOS) — on melchior itself
 sudo nixos-rebuild switch --flake .#melchior
@@ -232,6 +238,14 @@ Hub-and-spoke: melchior runs the always-on hub as a system service, and casper a
 - **Tailscale** from the Homebrew `tailscale-app` cask. nix-darwin's module runs in userspace-networking mode and can't push MagicDNS to macOS.
 - **Remote Login (sshd)** turned on, so `ssh alongo@casper` works over the tailnet. The Tailscale app is sandboxed and can't do Tailscale SSH.
 - `pmset -c sleep 0` keeps the laptop reachable on the tailnet while plugged in
+
+### casper-linux (Omarchy on the MacBook)
+
+- casper dual-boots: macOS keeps `darwinConfigurations.casper`, and the Omarchy side (Arch Linux ARM on Asahi) is `homeConfigurations.casper-linux`, set up like balthasar
+- No Nix compilers, for the same reason as balthasar; Arch's gcc + rustup instead
+- `updatecasper` / `editcasper` point at casper-linux on that side (overridden in its configuration.nix)
+- Tailscale via `pacman` + systemd. It's a separate tailnet node from macOS casper (`casper-1` unless renamed) and a separate Syncthing device (`casper-linux` in `modules/syncthing-peers.nix`)
+- The desktop itself (rice, apps) comes from the separate nerv-rice repo's `rice-install`
 
 ### balthasar (Arch Desktop)
 
